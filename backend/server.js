@@ -9,7 +9,17 @@ app.get('/', function (req, res) {
 
 //when user makes request to home route it triggers this callback function
 app.get('/api/products', function (req, res) {
-    console.log(products);
+    res.json(products);
+})
+
+//when user makes get request to /api/product/..(param) whatever user types in.
+//it will trigger this callback function
+app.get('/api/products/:id', function (req, res) {
+    //find product in products array. where product _id is equalt to whatever is typed after
+    ///api/product/..(param)
+    const product = products.find((p) => p._id === req.params.id);
+    res.json(product)
+
 })
 
 app.listen(5000, function () {
