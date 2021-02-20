@@ -1,6 +1,9 @@
 const express = require('express');//require express to use itcd ..
 const app = express();//express is function that represents express
 const products = require('./data/products');
+const dotenv = require('dotenv');//import module to use environment varuables
+
+dotenv.config();//to use environment varuables from env file
 
 //when user makes request to home route it triggers this callback function
 app.get('/', function (req, res) {
@@ -22,6 +25,8 @@ app.get('/api/products/:id', function (req, res) {
 
 })
 
-app.listen(5000, function () {
-    console.log('Server started on port 5000');
+const PORT = process.env.PORT || 5000;//GET environment varuables(PORT) from .env file
+//or use 5000
+app.listen(PORT, function () {
+    console.log(`Server is running in ${process.env.NODE_ENV} on port ${PORT}`);
 })
