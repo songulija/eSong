@@ -26,7 +26,7 @@ const productSchema = mongoose.Schema({
     user:{//users sells products, it will be id of that user(ObjectId) 
         type: mongoose.Schema.Types.ObjectId,//which mongoose gives when adding to database by default
         required: true,
-        ref: User//reference to specific model for this objectId
+        ref: 'User'//reference to specific model for this objectId
     },//that adds relationship between product and user
     name:{//product will have name(string)
         type: String,
