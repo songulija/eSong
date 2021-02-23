@@ -1,9 +1,15 @@
-const express = require('express');//require express to use itcd ..
-const app = express();//express is function that represents express
-const products = require('./data/products');
-const dotenv = require('dotenv');//import module to use environment varuables
+import express from 'express';//require express to use itcd ..
+import dotenv from 'dotenv';//import module to use environment varuables
+import connectDB from './config/db.js';
+import products from './data/products.js';
+
+
 
 dotenv.config();//to use environment varuables from env file
+
+connectDB();
+
+const app = express();//express is function that represents express
 
 //when user makes request to home route it triggers this callback function
 app.get('/', function (req, res) {
