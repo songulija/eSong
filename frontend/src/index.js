@@ -3,12 +3,16 @@ import ReactDOM from 'react-dom';
 import './bootstrap.min.css';
 import './index.css'
 import App from './App.js';
+import store from './store.js'
+import {Provider} from 'react-redux';//provider just connects our global state(Store) to whole App
 
 
-ReactDOM.render(
-  <div>
+ReactDOM.render(//provider just connects our global state(Store) to whole App, and provide store
+  <React.StrictMode>
+  <Provider store={store}>
     <App />
-  </div>
+    </Provider>
+  </React.StrictMode>
   , document.getElementById('root')
 );
 
