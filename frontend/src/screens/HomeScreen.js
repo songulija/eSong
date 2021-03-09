@@ -41,7 +41,7 @@ function HomeScreen() {
                     </Col>
                 )}
             </Row>
-            }
+
 
 
 
