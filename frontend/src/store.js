@@ -4,22 +4,30 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { productListReducer } from './reducers/productReducers.js';
 import { productDetailsReducer } from './reducers/productReducers.js'
 import { cartReducer } from './reducers/cartReducers.js'
-
+import { userLoginReducer } from './reducers/usersReducer.js'
 
 //thunk allows to make asynchronous request. adding productList reducer to it
+//we combine all reducers into one with combineReducers. becouse store can take one reducer.
+//so it's one big reducer that contains all reducers that we specify
 const reducer = combineReducers({
     productList: productListReducer,
     productDetails: productDetailsReducer,
-    cart: cartReducer
-});
+    cart: cartReducer,
+    userLogin: userLoginReducer
+});//for example we'll have userLoginReducer set as userLogin. we just giving it name. you can keep it same if want
+
 //we want to get cartItems from localStorage if they are there. if they are there we need to convert JSON string into object
 const cartItemsFromStorage = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [];//if they are not found in localStorage it will just be empty array
 
+//we want to get userInfo from localStorage if they are there. if they are there we need to convert JSON string into object
+const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;//if they are not found in localStorage it will just be null
 
 //this is where we can get our cart items. so that will be loaded when store is loaded
 const initialState = {//so in cart state we will have cartItems equal to all items stored in localStorage
-    cart: { cartItems: cartItemsFromStorage }
-};
+    cart: { cartItems: cartItemsFromStorage },
+    userLogin: { userInfo: userInfoFromStorage }
+};//and we want to add our userInfoFromStorage to initial state. add userLogin and inside set userInfo to userInfoFromStorage
+//so that data will always come from local storage if its there
 
 const middleware = [thunk];//thunk will allow to make async request in Actions
 
