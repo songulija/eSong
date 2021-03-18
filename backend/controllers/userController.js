@@ -12,6 +12,7 @@ import generateToken from '../utils/generateToken.js'
 const authUser = asyncHandler(async (req, res) => {
     //when we will make request we will send some data. we can acces that data wth req.body
     const { email, password } = req.body;//destructure that data from req.body
+    console.log(email + ' ' + password)
 
     const user = await User.findOne({ email: email })
     //we want to find one document in users collection. find user document with that email

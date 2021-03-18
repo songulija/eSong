@@ -4,7 +4,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { productListReducer } from './reducers/productReducers.js';
 import { productDetailsReducer } from './reducers/productReducers.js'
 import { cartReducer } from './reducers/cartReducers.js'
-import { userLoginReducer } from './reducers/usersReducer.js'
+import { userLoginReducer, userRegisterReducer } from './reducers/usersReducer.js'
 
 //thunk allows to make asynchronous request. adding productList reducer to it
 //we combine all reducers into one with combineReducers. becouse store can take one reducer.
@@ -13,7 +13,8 @@ const reducer = combineReducers({
     productList: productListReducer,
     productDetails: productDetailsReducer,
     cart: cartReducer,
-    userLogin: userLoginReducer
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer
 });//for example we'll have userLoginReducer set as userLogin. we just giving it name. you can keep it same if want
 
 //we want to get cartItems from localStorage if they are there. if they are there we need to convert JSON string into object

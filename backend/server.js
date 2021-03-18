@@ -43,20 +43,7 @@ app.use(notFound);
 //to stop request res cycle
 app.use(errorHandler);
 
-//when user makes request to home route it triggers this callback function
-app.get('/api/products', function (req, res) {
-    res.json(products);
-})
 
-//when user makes get request to /api/product/..(param) whatever user types in.
-//it will trigger this callback function
-app.get('/api/products/:id', function (req, res) {
-    //find product in products array. where product _id is equalt to whatever is typed after
-    ///api/product/..(param)
-    const product = products.find((p) => p._id === req.params.id);
-    res.json(product)
-
-})
 
 const PORT = process.env.PORT || 5000;//GET environment varuables(PORT) from .env file
 //or use 6000
