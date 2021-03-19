@@ -14,7 +14,7 @@ const authUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;//destructure that data from req.body
     console.log(email + ' ' + password)
 
-    const user = await User.findOne({ email: email })
+    const user = await User.findOne({ email })
     //we want to find one document in users collection. find user document with that email
 
     if (user && (await user.matchPassword(password))) {//if user with that email exist, and if password matches
@@ -97,4 +97,45 @@ const getUserProfile = asyncHandler(async (req, res) => {
     }
 })
 
-export { authUser, registerUser, getUserProfile }
+
+
+
+//@desc   Get user profile
+//@route  PUT /api/users/profile
+//@access private
+
+//user needs to be logged in and send a token
+const updateUserProfile = asyncHandler(async (req, res) => {
+    
+    const user = await User.findById(req.user._id);
+    console.log(req.user._id);
+    //find user by id from users collection. passing req.user._id
+    //to whatever logged in user is. that will get user
+
+    if (user) {//check for user. its found. then user.name set to req.body.name 
+        //or if its not there stay to whatever user name is
+        user.name = req.body.name || user.name
+        user.email = req.body.email || user.email
+        if(req.body.password){//if password was send to update too then
+            user.password = req.body.password
+        }//it'll be encrypted automatically becouse of what we did in model
+
+        //then save
+        const updatedUser = await user.save();
+
+        //and send response
+        res.json({//when we want to response/return
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            isAdmin: updatedUser.isAdmin,
+            token: generateToken(updatedUser._id)
+        })//_id which equals to updatedUser._id, name.email,isAdmin, and token of updated user
+        //we call function that will generate JWT token, and we pass updatedUser._id that will be saved in that token
+    } else {
+        res.status(404);//not found
+        throw new Error('User not found')
+    }
+})
+
+export { authUser, registerUser, getUserProfile,updateUserProfile }

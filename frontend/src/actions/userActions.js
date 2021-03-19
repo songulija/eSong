@@ -22,7 +22,7 @@ export const login = (email, password) => async (dispatch) => {
 
         //we want to make post request and pass object with email and password. and as third argument pass config
         //this post request will return json data. _id,name,email .. TOKEN
-        const { data } = await axios.post('/api/users/login', { email, password })
+        const { data } = await axios.post('/api/users/login', { email, password }, config)
 
         dispatch({//dispatch action with type/name USER_LOGIN_SUCCESS. and send data as payload
             type: 'USER_LOGIN_SUCCESS',
@@ -30,7 +30,7 @@ export const login = (email, password) => async (dispatch) => {
         })
 
         //then we want to set our user to local storage. set this 'userInfo' and pass data as as string(json)
-        localStorage.setItem('serInfo', JSON.stringify(data));
+        localStorage.setItem('userInfo', JSON.stringify(data));
 
 
     } catch (error) {//if something fails then dispatch action with type/name PRODUCT_DETAILS_FAIL and pass error data as payload
@@ -87,13 +87,52 @@ export const register = (name, email, password) => async (dispatch) => {
 
 
         //then we want to set our user to local storage. set this 'userInfo' and pass data as as string(json)
-        localStorage.setItem('serInfo', JSON.stringify(data));//it's same thing as logging in, we want same effect
+        localStorage.setItem('userInfo', JSON.stringify(data));//it's same thing as logging in, we want same effect
 
 
     } catch (error) {//if something fails then dispatch action with type/name PRODUCT_DETAILS_FAIL and pass error data as payload
         console.log(error)
         dispatch({
             type: 'USER_REGISTERS_FAIL',
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message
+        });
+    }
+}
+
+
+//we need to send token so we need getState, we can get userInfo from getState which has token in it
+export const getUserDetails = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({//first dispatch action with type/name USER_LOGIN_REQUEST. reducer will caught it. and set loading to true
+            type: 'USER_DETAILS_REQUEST'
+        })
+
+        //we can destructure from getState. we want to get userLogin and then destructure it and get userInfo
+        const {userLogin: {userInfo}} = getState();//that should give us access to logged in users object
+
+        //then we want to dispatch 'USER_LOGIN_SUCCESS' but we need to check data first
+        //but when we're sending data we want to send it in headers
+        //IN config we want to pass our token
+        const config = {//but for now we set content type to application/json'
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }//so we could pass user token in header
+        }
+
+
+        //we want to make get request to /api/users/.. id of user
+        const { data } = await axios.post(`/api/users/${id}`, config)//so we will register new user, it will return new user data
+
+        dispatch({//dispatch action with type/name USER_REGISTER_SUCCESS. and send data as payload
+            type: 'USER_DETAILS_SUCCESS',
+            payload: data
+        })
+
+    } catch (error) {//if something fails then dispatch action with type/name PRODUCT_DETAILS_FAIL and pass error data as payload
+        console.log(error)
+        dispatch({
+            type: 'USER_DETAILS_FAIL',
             payload: error.response && error.response.data.message ? error.response.data.message : error.message
         });
     }

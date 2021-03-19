@@ -26,7 +26,7 @@ function LoginScreen({ location, history }) {
         }
     }, [history, userInfo, redirect])//if userInfo changed we want to redirect
 
-    const submitHandler = function (e) {
+    const submitHandler = (e)=> {
         e.preventDefault();//prevemnt default behaviour when submit button is clicked. preved refresh of page
         //DISPATCH LOGIN action. pass email and password that user typed
         dispatch(login(email, password));
@@ -47,10 +47,7 @@ function LoginScreen({ location, history }) {
 
                 <Form.Group controlId='password'>
                     <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type='password'
-                        placeholder='Enter password'
-                        value={password} onChange={(e) => setPassword(e.target.value)}>
+                    <Form.Control type='password' placeholder='Enter password' value={password} onChange={(e) => setPassword(e.target.value)}>
                     </Form.Control>
                 </Form.Group>
 
