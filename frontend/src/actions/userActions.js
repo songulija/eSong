@@ -42,7 +42,8 @@ export const logout = () => (dispatch) => {
 
     localStorage.removeItem('userInfo')
     dispatch({ type: 'USER_LOGOUT' })
-
+    dispatch({ type: 'USER_DETAILS_RESET' })//when logout to dispatch these two actions 
+    dispatch({ type: 'ORDER_LIST_MY_RESET'})//to emtpy user details and orders of that user that was logged
 }
 
 

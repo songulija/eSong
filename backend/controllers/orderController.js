@@ -83,4 +83,16 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
     }
 })
 
-export { addOrderItems, getOrderById, updateOrderToPaid }
+
+//@desc   Get logged in user orders
+//@route  GET /api/orders/myorders
+//@access private
+const getMyOrders = asyncHandler(async (req, res) => {
+    //when we want to access something thats passed to get route use req.params.id
+    const orders = await Order.find({user: req.user._id})
+    //we want to get orders where user is equal to req.user._id. only logged in user(get from token)
+
+    res.json(orders)
+})
+
+export { addOrderItems, getOrderById, updateOrderToPaid, getMyOrders }

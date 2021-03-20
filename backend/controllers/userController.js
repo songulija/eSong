@@ -138,4 +138,17 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     }
 })
 
-export { authUser, registerUser, getUserProfile, updateUserProfile }
+
+
+//@desc   Get all users
+//@route  GET /api/users
+//@access private/Admin
+//not only its protected and you have to login, but you have to be admin too
+
+const getUsers = asyncHandler(async (req, res) => {
+    //if we verified token it will set req.user to user that is got from db(it has all data except password)
+    const users = await User.find({})//get all users
+    res.json(users)
+})
+
+export { authUser, registerUser, getUserProfile, updateUserProfile, getUsers}

@@ -24,7 +24,6 @@ export const UserRegisterReducer = (state = {}, action) => {
             return { loading: true };
         case 'USER_REGISTER_SUCCESS':
             return { loading: false, UserInfo: action.payload };
-
         case 'USER_REGISTER_FAIL':
             return { loading: false, error: action.payload };
 
@@ -45,7 +44,9 @@ export const UserDetailsReducer = (state = { user: {} }, action) => {
 
         case 'USER_DETAILS_FAIL':
             return { loading: false, error: action.payload };
-
+        case 'USER_DETAILS_RESET':
+            return { useer: {}}//return empty user object
+    
         default:
             return state
     }

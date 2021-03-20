@@ -113,3 +113,40 @@ export const payOrder = (orderId, paymentResult) => async (dispatch, getState) =
     }
 
 }
+
+
+//dont have to pass anything becouse it knows who we are from token
+export const listMyOrders = (orderId, paymentResult) => async (dispatch, getState) => {
+
+    try {
+        //dispatch action with type/name ..
+        dispatch({
+            type: 'ORDER_LIST_MY_REQUEST'
+        })
+
+        const { userLogin: { userInfo } } = getState();//get user info. so we can pass token in headers
+
+        const config = {
+            headers: {//its get request we dont need to have content-type
+                Authorization: `Bearer ${userInfo.token}`
+            }//but we need token
+        }//setting authorization to our token   
+
+        const { data } = await axios.get(`/api/orders/myorders`, config)
+        //make get request to /api/orders/myorders route and pass config(token)
+        dispatch({//dispatch action and pass data as payload
+            type: 'ORDER_LIST_MY_SUCCESS',
+            payload: data,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: 'ORDER_LIST_MY_FAIL',
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        })
+    }
+
+}
