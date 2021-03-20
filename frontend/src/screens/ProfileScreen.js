@@ -1,111 +1,129 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import { Form, Button, Row, Col, FormGroup } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserDetails } from '../actions/userActions.js'
+import { getUserDetails, updateUserProfile } from '../actions/userActions.js'
+import Message from '../components/Message.js'
+import Loader from '../components/Loader.js'
 
-function ProfileScreen({ location, history }) {
-    //useState has initial value and function to update initial value
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')//by default both will be strings
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [message, setMessage] = useState(null)//message will appear in register is unsuccesful
+const ProfileScreen = ({ history, location }) => {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [message, setMessage] = useState(null);
 
-    const dispatch = useDispatch();//to dispatch actions to reducer
+    const dispatch = useDispatch()
 
-    ////useSelector is function. we 'll access entire state(Store). we can just pull out state.userDetails
-    const userDetails = useSelector(state => state.userDetails)
-    const { loading, error, user } = userDetails;//we want to distructure userDetails to these
+    ////useSelector is function that gives acces to entire state(store).and we can pullout userDetails state from it
+    const userDetails = useSelector((state) => state.userDetails)
+    const { loading, error, user } = userDetails
+
+    ////useSelector is function that gives acces to entire state(store).and we can pullout userLogin state from it
+    const userLogin = useSelector((state) => state.userLogin)
+    const { userInfo } = userLogin
+
+    ////useSelector is function that gives acces to entire state(store).and we can pullout userUpdateProfile state from it
+    const userUpdateProfile = useSelector((state) => state.userUpdateProfile)
+    const { success } = userUpdateProfile
 
 
-    ////useSelector is function. we 'll access entire state(Store). we can just pull out state.userLogin
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin;//we want to distructure userLogin to these
-    //to check if user is logged in or not
-
-
-    //we want to redirect if we already logged in
+    //when component is initialized it calls this function 
     useEffect(() => {
-        if (!userInfo) {//if user doesnt have userInfo then he's not logged in
-            history.push('/login')//redirect to /login route
-        }else{
-            //check for user
-            if(!user.name){//dispatch getUserDetails, pass profile. so in action it will send get request to /api/users/profile
-                dispatch(getUserDetails('profile'));
-            }else{//if we do have user then
-                setName(user.name);
+        if (!userInfo) {//if we dont have user logged
+            history.push('/login')
+        } else {
+            if (!user.name) {
+                dispatch(getUserDetails('profile'))
+            } else {
+                setName(user.name)
                 setEmail(user.email)
-
             }
         }
-    }, [dispatch, history, userInfo, user])//if userInfo or user changes we want to call this function
+    }, [dispatch, history, userInfo, user])
+    //call this function when either of this is changed too
 
-    const submitHandler = function (e) {
-        e.preventDefault();//prevemnt default behaviour when submit button is clicked. preved refresh of page
+    const submitHandler = (e) => {
+        e.preventDefault()//prevent default behaviour, screen refreshing
 
         if (password !== confirmPassword) {
-            setMessage('Passwords do not match')
-        } else {//if password and confirmPassword match then
-            //DISPATCH REGISTER action. pass name, email and password that user typed
-            //this is where we'll dispatch update profile
-             
+            setMessage('password do not match')
+        } else {//update user profile
+            dispatch(updateUserProfile({ id: user._id, name, email, password }))
         }
-
-
 
     }
 
-    return (//creating form inside F
+    return (
         <Row>
             <Col md={3}>
-<h2>User Profile</h2>
-            {message && <h2>{message}</h2>}
-            {error && <h2>{error}</h2>}
-            {loading && <h2>Loading</h2>}
-            <Form onSubmit={submitHandler}>
-                <Form.Group controlId='name'>
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control type='name' placeholder='Enter name' value={name} onChange={(e) => setName(e.target.value)}>
-                    </Form.Control>
-                </Form.Group>
+                <h2>User profile</h2>
 
-                <Form.Group controlId='email'>
-                    <Form.Label>Email Adress</Form.Label>
-                    <Form.Control type='email' placeholder='Enter email' value={email} onChange={(e) => setEmail(e.target.value)}>
-                    </Form.Control>
-                </Form.Group>
+                {message && <Message variant='danger'>{message}</Message>}
+                {error && <Message variant='danger'>{error}</Message>}
+                {success && <Message variant='success'>Profile Updated</Message>}
+                {loading && <Loader />}
+                <Form onSubmit={submitHandler}>
+                    <Form.Group controlId='text'>
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control
+                            type='name'
+                            placeholder='Enter name'
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='email'>
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control
+                            type='email'
+                            placeholder='Enter email'
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='Password'>
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+                            type='password'
+                            placeholder='Enter password'
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        >
+
+                        </Form.Control>
+
+                    </Form.Group>
 
 
-                <Form.Group controlId='password'>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type='password'
-                        placeholder='Enter password'
-                        value={password} onChange={(e) => setPassword(e.target.value)}>
-                    </Form.Control>
-                </Form.Group>
+                    <Form.Group controlId='Password'>
+                        <Form.Label>Confirm password</Form.Label>
+                        <Form.Control
+                            type='password'
+                            placeholder='Confirm password'
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        >
 
-                <Form.Group controlId='confirmPassword'>
-                    <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control
-                        type='password'
-                        placeholder='Confirm password'
-                        value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}>
-                    </Form.Control>
-                </Form.Group>
+                        </Form.Control>
 
+                    </Form.Group>
 
-                <Button type='submit' variant='primary'>
-                    Update
-                </Button>
-            </Form>
+                    <Button type='Submit' variant='primary'> Update</Button>
+
+                </Form>
+
             </Col>
+
             <Col md={9}>
-                <h2>My Orders</h2>
+                <h2>My orders</h2>
             </Col>
         </Row>
-    )//if you have redirect value then it'll send you to /register?.. whatever redirect value is
+    )
 }
+
 
 export default ProfileScreen

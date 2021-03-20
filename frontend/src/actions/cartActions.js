@@ -38,3 +38,30 @@ export const removeFromCart = (id) => (dispatch, getState) => {
     //so after action is dispatched it will return back here to execute rest of code. 
     //after deletion we want to save it in local storage
 }
+
+//we give type/name to action. function will take shipping data object
+export const saveShippingAdress = (data) => (dispatch) => {
+    dispatch({//dispatch action. give type/name to action
+        type: 'CART_SAVE_SHIPPING_ADDRESS',
+        payload: data,//we send data thats passed here to reducer as payload. 
+    })
+    //once we dispatch action we want to save shipping data in local storage, 
+    localStorage.setItem('shippingAddress', JSON.stringify(data))
+
+}
+
+
+//we give type/name to action. function will take paymentMethod('paypal or stripe)
+export const savePaymentMethod = (data) => (dispatch) => {
+    dispatch({//dispatch action. give type/name to action
+        type: 'CART_SAVE_PAYMENT_METHOD',
+        payload: data,//we send data thats passed here to reducer as payload. 
+    })
+    //once we dispatch action we want to save paymentMethod in local storage, 
+    localStorage.setItem('paymentMethod', JSON.stringify(data))
+
+}
+
+
+
+

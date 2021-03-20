@@ -79,7 +79,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const getUserProfile = asyncHandler(async (req, res) => {
     //if we verified token it will set req.user to user that is got from db(it has all data except password)
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user._id)
     console.log(req.user._id);
     //find user by id from users collection. passing req.user._id
     //to whatever logged in user is. that will get user
@@ -106,7 +106,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
 //user needs to be logged in and send a token
 const updateUserProfile = asyncHandler(async (req, res) => {
-    
+
     const user = await User.findById(req.user._id);
     console.log(req.user._id);
     //find user by id from users collection. passing req.user._id
@@ -116,7 +116,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         //or if its not there stay to whatever user name is
         user.name = req.body.name || user.name
         user.email = req.body.email || user.email
-        if(req.body.password){//if password was send to update too then
+        if (req.body.password) {//if password was send to update too then
             user.password = req.body.password
         }//it'll be encrypted automatically becouse of what we did in model
 
@@ -138,4 +138,4 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     }
 })
 
-export { authUser, registerUser, getUserProfile,updateUserProfile }
+export { authUser, registerUser, getUserProfile, updateUserProfile }

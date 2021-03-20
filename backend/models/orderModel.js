@@ -8,7 +8,7 @@ const orderSchema = mongoose.Schema({
         required: true,
         ref: 'User'//reference to specific model for this objectId
     },
-    oderItems: [
+    orderItems: [
         {//user will able to have array of order items
             name: {
                 type: String,
@@ -33,8 +33,8 @@ const orderSchema = mongoose.Schema({
             }
         }
     ],
-    shippingAdress: {//shipping adress will have adress, city,postalcode
-        adress: { type: String, required: true },
+    shippingAddress: {//shipping adress will have adress, city,postalcode
+        address: { type: String, required: true },
         city: { type: String, required: true },
         postCode: { type: String, required: true },
         country: { type: String, required: true }

@@ -7,7 +7,8 @@ import User from '../models/userModel.js'
 const protect = asyncHandler(async (req, res, next) => {
     let token;
     //we will check for token. if there was passed req.headers.authorization value
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    if (req.headers.authorization &&
+        req.headers.authorization.startsWith('Bearer')) {
         try {
             //i just want token. without word Bearer. we split and get only token part
             token = req.headers.authorization.split(' ')[1]
@@ -17,6 +18,7 @@ const protect = asyncHandler(async (req, res, next) => {
             req.user = await User.findById(decoded.id).select('-password');
             //finding user by id, and we dont want to select password from db\
             //so oour 
+            next()
 
         } catch (error) {
             console.error(error);
@@ -30,7 +32,7 @@ const protect = asyncHandler(async (req, res, next) => {
         throw new Error('Not authorized, no token');
     }
 
-    next()//since its middleware we call next
+
 })
 
 export { protect }

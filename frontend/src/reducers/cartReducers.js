@@ -1,7 +1,7 @@
 
 //creating reducer. first paraemeter is how our state will look like. what is initial state of cartReducer
 //reducer will take care of all Actions related to cartReducer. //and second is action that was dispatched
-export const cartReducer = (state = { cartItems: [] }, action) => {//initial state is empty array of cartItems
+export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, action) => {//initial state is empty array of cartItems
     switch (action.type) {//switching type/name of action
         case 'CART_ADD_ITEM':
             //if we add to cart and its already there
@@ -25,8 +25,18 @@ export const cartReducer = (state = { cartItems: [] }, action) => {//initial sta
             return {
                 ...state,
                 cartItems: state.cartItems.filter((x) => x.product != action.payload),
-            }//set cartItems to, filter through cartItems array. if x.product(id) is equal to action.payload
-        //dispatched action data as payload, that send data is item id
+            }//set cartItems to, filter through cartItems array. if x.product(id) is equal to action.payload dispatched action data as payload, that send data is item id
+        case 'CART_SAVE_SHIPPING_ADDRESS':
+            return {//return initial state. and add shipping adress, equal to dispached action payload data
+                ...state,
+                shippingAddress: action.payload,
+            }
+        //CART_SAVE_PAYMENT_METHOD
+        case 'CART_SAVE_PAYMENT_METHOD':
+            return {//return initial state. and add paymentMethod, equal to dispached action payload data
+                ...state,
+                paymentMethod: action.payload,
+            }
         default:
             return state;
 

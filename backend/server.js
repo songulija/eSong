@@ -4,6 +4,7 @@ import connectDB from './config/db.js';
 import products from './data/products.js';
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import orderRoutes from './routes//orderRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 
@@ -31,6 +32,14 @@ app.use('/api/products', productRoutes);//we just use middleware
 //Where we have methods that will catch all HTTP request to /api/users
 app.use('/api/users', userRoutes);
 
+//for anything that goes to /api/orders is going to be linked to orderRoutes.js
+//Where we have methods that will catch all HTTP request to /api/users
+app.use('/api/orders', orderRoutes);
+
+//when making get request to this route. so when ready to make payment we will make request 
+app.get('/api/config/paypal', (req, res) => {//to this route and get PAYPAL_CLIENT_ID
+    res.send(process.env.PAYPAL_CLIENT_ID)
+})
 
 
 //we want erors for 404 which is not found. if we go anywhere that is not actual route

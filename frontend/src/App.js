@@ -9,6 +9,10 @@ import CartScreen from './screens/CartScreen.js';
 import LoginScreen from './screens/LoginScreen.js';
 import RegisterScreen from './screens/RegisterScreen.js'
 import ProfileScreen from './screens/ProfileScreen.js';
+import ShippingScreen from './screens/ShippingScreen.js';
+import PaymentScreen from './screens/PaymentScreen.js';
+import PlaceOrderScreen from './screens/PlaceOrderScreen.js';
+import OrderScreen from './screens/OrderScreen.js';
 
 function App() {
   return (//have to wrap entire App in Router in order to use it
@@ -16,14 +20,16 @@ function App() {
       <Header />
       <main className='py-3'>
         <Container>
+          <Route path="/order/:id" component={OrderScreen} />
+          <Route path="/shipping" component={ShippingScreen} />
+          <Route path="/payment" component={PaymentScreen} />
+          <Route path="/placeorder" component={PlaceOrderScreen} />
           <Route path='/login' component={LoginScreen} />
           <Route path='/register' component={RegisterScreen} />
           <Route path='/profile' component={ProfileScreen} />
           <Route path='/product/:id' component={ProductScreen} />
           <Route path='/cart/:id?' component={CartScreen} />
           <Route path='/' component={HomeScreen} exact />
-
-
         </Container>
 
       </main>
