@@ -75,7 +75,7 @@ export const orderPayReducer = (state = {}, action) => {
 
 
 //reducer will take care of all Actions related to orderReducer. //and second is action that was dispatched
-export const orderListMyReducer = (state = {orders: []}, action) => {//state will be emtpy orders array
+export const orderListMyReducer = (state = { orders: [] }, action) => {//state will be emtpy orders array
     switch (action.type) {//depending on action type/name that was dispatched we return different state
         case 'ORDER_LIST_MY_REQUEST':
             return {//return whaterver is already in state and loading true
@@ -92,7 +92,30 @@ export const orderListMyReducer = (state = {orders: []}, action) => {//state wil
                 error: action.payload
             }
         case 'ORDER_LIST_MY_RESET':
-            return { orders: []}//return emtpy orders array
+            return { orders: [] }//return emtpy orders array
+        default:
+            return state
+    }
+}
+
+//reducer will take care of all Actions related to orderListReducer. //and second is action that was dispatched
+//state is array of orders
+export const orderListReducer = (state = { orders: [] }, action) => {
+    switch (action.type) {
+        case 'ORDER_LIST_REQUEST':
+            return {
+                loading: true,
+            }
+        case 'ORDER_LIST_SUCCESS'://return orders array, its equal to dispatched action data dispatched as payload
+            return {
+                loading: false,
+                orders: action.payload,
+            }
+        case 'ORDER_LIST_FAIL':
+            return {
+                loading: false,
+                error: action.payload,
+            }
         default:
             return state
     }

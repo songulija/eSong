@@ -43,7 +43,8 @@ export const logout = () => (dispatch) => {
     localStorage.removeItem('userInfo')
     dispatch({ type: 'USER_LOGOUT' })
     dispatch({ type: 'USER_DETAILS_RESET' })//when logout to dispatch these two actions 
-    dispatch({ type: 'ORDER_LIST_MY_RESET'})//to emtpy user details and orders of that user that was logged
+    dispatch({ type: 'ORDER_LIST_MY_RESET' })//to emtpy user details and orders of that user that was logged
+    dispatch({ type: 'USER_LIST_RESET' })// to reset userlist (admin)
 }
 
 
@@ -166,3 +167,119 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
 
 }
 
+
+
+//for admin
+export const listUsers = () => async (dispatch, getState) => {
+
+    try {
+
+        dispatch({
+            type: 'USER_LIST_REQUEST'
+        })
+
+        const { userLogin: { userInfo } } = getState();
+
+        const config = {
+            headers: {//getting the token, pasting to header
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+        //get request to  /api/users route to get all users. and config(token)
+        const { data } = await axios.get(`/api/users`, config)
+
+        dispatch({
+            type: 'USER_LIST_SUCCESS',
+            payload: data,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: 'USER_LIST_FAIL',
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        })
+    }
+
+}
+
+
+
+
+//for admin. pass userId
+export const deleteUser = (id) => async (dispatch, getState) => {
+
+    try {
+
+        dispatch({
+            type: 'USER_DELETE_REQUEST'
+        })
+
+        const { userLogin: { userInfo } } = getState();
+
+        const config = {
+            headers: {//getting the token, pasting to header
+                Authorization: `Bearer ${userInfo.token}`
+            }//token for Authorization
+        }
+        //delete request to  /api/users/${id} route to get delete user, pass config(token)
+        await axios.delete(`/api/users/${id}`, config)
+
+        dispatch({
+            type: 'USER_DELETE_SUCCESS',
+        })
+
+    } catch (error) {
+        dispatch({
+            type: 'USER_DELETE_FAIL',
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        })
+    }
+
+}
+
+
+
+export const updateUser = (user) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: 'USER_UPDATE_REQUEST',
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {//pass content type, and token
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        }
+        //put request to /api/users/${user._id}, we pass user and token(config)
+        const { data } = await axios.put(`/api/users/${user._id}`, user, config)
+
+        dispatch({ type: 'USER_UPDATE_SUCCESS' })
+
+        dispatch({ type: 'USER_DETAILS_SUCCESS', payload: data })
+
+        dispatch({ type: 'USER_DETAILS_RESET' })
+    } catch (error) {
+        const message =
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        if (message === 'Not authorized, token failed') {
+            dispatch(logout())
+        }
+        dispatch({
+            type: 'USER_UPDATE_FAIL',
+            payload: message,
+        })
+    }
+}

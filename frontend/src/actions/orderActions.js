@@ -150,3 +150,39 @@ export const listMyOrders = (orderId, paymentResult) => async (dispatch, getStat
     }
 
 }
+
+
+
+export const listOrders = () => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: 'ORDER_LIST_REQUEST',
+        })
+
+        const {//get user info. so we can pass token in headers
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {//get our token from userInfo
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        }
+        //make get request to /api/orders and pass token(config)
+        const { data } = await axios.get(`/api/orders`, config)
+
+        dispatch({//dispatch action with type/name, and data attached to it as payload
+            type: 'ORDER_LIST_SUCCESS',
+            payload: data,
+        })
+    } catch (error) {
+        const message =
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        dispatch({
+            type: 'ORDER_LIST_FAIL',
+            payload: message,
+        })
+    }
+}

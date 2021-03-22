@@ -34,3 +34,121 @@ export const listProductDetails = (id) => async (dispatch) => {//when we'll want
 
     }
 }
+
+
+//it will take product id
+export const deleteProduct = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: 'PRODUCT_DELETE_REQUEST',
+        })
+
+        //getting userInfo state from userLogin
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {//passing authorization token
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        }
+        //make delete request to /api/products/${id} route, and we pass token(config)
+        await axios.delete(`/api/products/${id}`, config)
+
+        dispatch({//we dont need to pass anything when dispatch
+            type: 'PRODUCT_DELETE_SUCCESS',
+        })
+    } catch (error) {
+        const message =
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        dispatch({
+            type: 'PRODUCT_DELETE_FAIL',
+            payload: message,
+        })
+    }
+}
+
+
+
+
+//it will createProduct. just sample product
+export const createProduct = () => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: 'PRODUCT_CREATE_REQUEST',
+        })
+
+        //getting userInfo state from userLogin
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {//passing authorization token which we need
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        }
+        //make post request to /api/products route, and we pass token(config)
+        const { data } = await axios.post(`/api/products`, {}, config)
+        //passing empty object, we making post request not sending data
+
+        dispatch({//we dont need to pass anything when dispatch
+            type: 'PRODUCT_CREATE_SUCCESS',
+            payload: data
+        })
+    } catch (error) {
+        const message =
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        dispatch({
+            type: 'PRODUCT_CREATE_FAIL',
+            payload: message,
+        })
+    }
+}
+
+//this action takes product object
+export const updateProduct = (product) => async (dispatch, getState) => {
+    try {
+        dispatch({//dispatch action with type/name ..
+            type: 'PRODUCT_UPDATE_REQUEST',
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()//get userLogin state from store, then destructure to userInfo
+
+        const config = {//we add content type to header
+            headers: {//get token from userInfo and pass it to authorization
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        }
+        //make put request to /api/products/${product._id}, passing product object id
+        const { data } = await axios.put(
+            `/api/products/${product._id}`,
+            product,
+            config
+        )//then we pass product object we want to update and token(config)
+
+        dispatch({//dispatch action with type/name and pass data as payload
+            type: 'PRODUCT_UPDATE_SUCCESS',
+            payload: data,
+        })
+        dispatch({ type: 'PRODUCT_DETAILS_SUCCESS', payload: data })
+        //dispatch action with type/name PRODUCT_DETAILS_SUCCESS to change state of productDetails and pass new data
+    } catch (error) {
+        const message =
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        dispatch({
+            type: 'PRODUCT_UPDATE_FAIL',
+            payload: message,
+        })
+    }
+}

@@ -151,4 +151,76 @@ const getUsers = asyncHandler(async (req, res) => {
     res.json(users)
 })
 
-export { authUser, registerUser, getUserProfile, updateUserProfile, getUsers}
+
+
+
+//@desc   Delete user
+//@route  DELETE /api/users/:id
+//@access private/Admin
+//not only its protected and you have to login, but you have to be admin too
+
+
+const deleteUser = asyncHandler(async (req, res) => {
+    //when we want to access something thats passed to get route use req.params.id
+    // /api/users/:id (:id) is param that's passed to url. so when we make request to backend,
+    //we can access it with req.params
+    const user = await User.findById(req.params.id)
+
+    if (user) {
+        await user.remove()
+        res.json({ message: 'User removed' })
+    } else {
+        res.status(404)
+        throw new Error('User not found')
+    }
+})
+
+
+//@desc   Get user by id
+//@route  GET /api/users/:id
+//@access private/Admin
+//not only its protected and you have to login, but you have to be admin too
+
+const getUserById = asyncHandler(async (req, res) => {
+    //when we want to access something thats passed to get route use req.params.id
+    // /api/users/:id (:id) is param that's passed to url. so when we make request to backend,
+    //we can access it with req.params
+    const user = await User.findById(req.params.id).select('-password')//select only password
+
+    if (user) {
+        res.json(user)
+    } else {
+        res.status(404)
+        throw new Error('User not found')
+    }
+
+})
+
+
+// @desc    Update user
+// @route   PUT /api/users/:id
+// @access  Private/Admin
+const updateUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id)
+
+    if (user) {
+        user.name = req.body.name || user.name
+        user.email = req.body.email || user.email
+        user.isAdmin = req.body.isAdmin ?? user.isAdmin
+
+        const updatedUser = await user.save()
+
+        res.json({
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            isAdmin: updatedUser.isAdmin,
+        })
+    } else {
+        res.status(404)
+        throw new Error('User not found')
+    }
+})
+
+
+export { authUser, registerUser, getUserProfile, updateUserProfile, getUsers, deleteUser, getUserById, updateUser }

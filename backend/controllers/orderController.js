@@ -89,10 +89,22 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 //@access private
 const getMyOrders = asyncHandler(async (req, res) => {
     //when we want to access something thats passed to get route use req.params.id
-    const orders = await Order.find({user: req.user._id})
+    const orders = await Order.find({ user: req.user._id })
     //we want to get orders where user is equal to req.user._id. only logged in user(get from token)
 
     res.json(orders)
 })
 
-export { addOrderItems, getOrderById, updateOrderToPaid, getMyOrders }
+
+//@desc   Get all orders
+//@route  GET /api/orders
+//@access private
+const getOrders = asyncHandler(async (req, res) => {
+    //when we want to access something thats passed to get route use req.params.id
+    const orders = await Order.find({}).populate('user', 'id name')//use populate to ged user that's associated with order, its data (id name)
+    //we want to get orders where user is equal to req.user._id. only logged in user(get from token)
+
+    res.json(orders)
+})
+
+export { addOrderItems, getOrderById, updateOrderToPaid, getMyOrders, getOrders }

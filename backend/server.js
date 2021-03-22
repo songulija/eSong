@@ -1,10 +1,13 @@
+import path from 'path'//just nodejs module that works with file path
 import express from 'express';//require express to use itcd ..
 import dotenv from 'dotenv';//import module to use environment varuables
 import connectDB from './config/db.js';
-import products from './data/products.js';
-import productRoutes from './routes/productRoutes.js';
-import userRoutes from './routes/userRoutes.js';
-import orderRoutes from './routes//orderRoutes.js';
+
+
+import productRoutes from './routes/productRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import orderRoutes from './routes/orderRoutes.js'
+import uploadRoutes from './routes/uploadRoutes.js'
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 
@@ -24,6 +27,8 @@ app.get('/', function (req, res) {
     res.send('Hello');
 });
 
+
+
 //for anything that goes to /api/products is going to be linked to productsRoutes.js
 //Where we have methods that will catch all HTTP request to /api/products
 app.use('/api/products', productRoutes);//we just use middleware
@@ -35,6 +40,14 @@ app.use('/api/users', userRoutes);
 //for anything that goes to /api/orders is going to be linked to orderRoutes.js
 //Where we have methods that will catch all HTTP request to /api/users
 app.use('/api/orders', orderRoutes);
+
+//for anything that goes to /api/upload is going to be linked to uploadRoutes.js
+//Where we have methods that will catch all HTTP request to /api/upload
+app.use('/api/upload', uploadRoutes)
+
+
+const __dirname = path.resolve();//to get __directory path of directory
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')))//make folder uploads static
 
 //when making get request to this route. so when ready to make payment we will make request 
 app.get('/api/config/paypal', (req, res) => {//to this route and get PAYPAL_CLIENT_ID

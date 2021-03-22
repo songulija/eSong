@@ -1,11 +1,11 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { productListReducer } from './reducers/productReducers.js';
+import { productCreateReducer, productDeleteReducer, productListReducer, productUpdateReducer } from './reducers/productReducers.js';
 import { productDetailsReducer } from './reducers/productReducers.js'
 import { cartReducer } from './reducers/cartReducers.js'
-import { UserDetailsReducer, UserLoginReducer, UserRegisterReducer, UserUpdateProfileReducer } from './reducers/usersReducer.js'
-import { orderCreateReducer, orderDetailsReducer, orderListMyReducer, orderPayReducer } from './reducers/orderReducers.js';
+import { userDeleteReducer, UserDetailsReducer, userListReducer, UserLoginReducer, UserRegisterReducer, UserUpdateProfileReducer, userUpdateReducer } from './reducers/usersReducer.js'
+import { orderCreateReducer, orderDetailsReducer, orderListMyReducer, orderPayReducer, orderListReducer } from './reducers/orderReducers.js';
 
 //thunk allows to make asynchronous request. adding productList reducer to it
 //we combine all reducers into one with combineReducers. becouse store can take one reducer.
@@ -13,15 +13,23 @@ import { orderCreateReducer, orderDetailsReducer, orderListMyReducer, orderPayRe
 const reducer = combineReducers({
     productList: productListReducer,
     productDetails: productDetailsReducer,
+    productDelete: productDeleteReducer,
+    productCreate: productCreateReducer,
+    productUpdate: productUpdateReducer,
     cart: cartReducer,
     userLogin: UserLoginReducer,
     userRegister: UserRegisterReducer,
     userDetails: UserDetailsReducer,
     userUpdateProfile: UserUpdateProfileReducer,
+    userList: userListReducer,
+    userDelete: userDeleteReducer,
+    userUpdate: userUpdateReducer,
     orderCreate: orderCreateReducer,
     orderDetails: orderDetailsReducer,
     orderPay: orderPayReducer,
-    orderListMy: orderListMyReducer
+    orderListMy: orderListMyReducer,
+    orderList: orderListReducer
+
 });//for example we'll have userLoginReducer set as userLogin. we just giving it name. you can keep it same if want
 
 //we want to get cartItems from localStorage if they are there. if they are there we need to convert JSON string into object
