@@ -9,7 +9,7 @@ import userRoutes from './routes/userRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-
+import morgan from 'morgan'
 
 
 dotenv.config();//to use environment varuables from env file
@@ -17,6 +17,10 @@ dotenv.config();//to use environment varuables from env file
 connectDB();
 
 const app = express();//express is function that represents express
+
+if(process.env.NODE_ENV === 'development'){
+    app.use(morgan('dev'))
+}
 
 app.use(express.json());//that will allow to accept json data in body
 

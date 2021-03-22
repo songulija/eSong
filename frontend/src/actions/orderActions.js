@@ -186,3 +186,43 @@ export const listOrders = () => async (dispatch, getState) => {
         })
     }
 }
+
+
+
+//we have to pass order object
+export const deliverOrder = (order) => async (dispatch, getState) => {
+
+    try {
+        //dispatch action with type/name ..
+        dispatch({
+            type: 'ORDER_DELIVER_REQUEST'
+        })
+
+        const { userLogin: { userInfo } } = getState();//get user info. so we can pass token in headers
+
+        const config = {
+            headers: {//we're not sending any data so dont need content-type
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }//setting Authorization to user token
+
+
+        const { data } = await axios.put(`/api/orders/${order._id}/deliver`, {} , config)//make get request to /api/orders/${id}/deliver route and pass config
+        
+
+        dispatch({//dispatch action and pass data as payload
+            type: 'ORDER_DELIVER_SUCCESS',
+            payload: data,
+        })
+
+    } catch (error) {
+        dispatch({
+            type: 'ORDER_DELIVER_FAIL',
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        })
+    }
+
+}

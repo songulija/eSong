@@ -5,7 +5,7 @@ import { productCreateReducer, productDeleteReducer, productListReducer, product
 import { productDetailsReducer } from './reducers/productReducers.js'
 import { cartReducer } from './reducers/cartReducers.js'
 import { userDeleteReducer, UserDetailsReducer, userListReducer, UserLoginReducer, UserRegisterReducer, UserUpdateProfileReducer, userUpdateReducer } from './reducers/usersReducer.js'
-import { orderCreateReducer, orderDetailsReducer, orderListMyReducer, orderPayReducer, orderListReducer } from './reducers/orderReducers.js';
+import { orderCreateReducer, orderDetailsReducer, orderListMyReducer, orderPayReducer, orderListReducer, orderDeliverReducer } from './reducers/orderReducers.js';
 
 //thunk allows to make asynchronous request. adding productList reducer to it
 //we combine all reducers into one with combineReducers. becouse store can take one reducer.
@@ -27,8 +27,9 @@ const reducer = combineReducers({
     orderCreate: orderCreateReducer,
     orderDetails: orderDetailsReducer,
     orderPay: orderPayReducer,
+    orderDeliver: orderDeliverReducer,
     orderListMy: orderListMyReducer,
-    orderList: orderListReducer
+    orderList: orderListReducer,
 
 });//for example we'll have userLoginReducer set as userLogin. we just giving it name. you can keep it same if want
 

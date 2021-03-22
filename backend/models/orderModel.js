@@ -51,8 +51,14 @@ const orderSchema = mongoose.Schema({
     totalPrice: { type: Number, required: true, default: 0.0 },
     isPaid: { type: Boolean, required: true, default: false },
     paidAt: { type: Date },//when paid, and if it is delivered. by default its false
-    deliveredAt: { type: Boolean, required: true, default: false }
-
+    isDelivered: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
+    deliveredAt: {
+        type: Date,
+    },
 }, {
     timestamps: true
 });

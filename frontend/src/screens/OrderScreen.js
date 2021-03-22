@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { PayPalButton } from 'react-paypal-button-v2'
 import { Link } from 'react-router-dom'
-import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
+import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../components/Loader.js'
 import Message from '../components/Message.js'
-import { getOrderDetails, payOrder } from '../actions/orderActions.js'
+import { getOrderDetails, payOrder, deliverOrder } from '../actions/orderActions.js'
 
 
 //match to get params(id) from url. /api/orders/....
-function OrderScreen({ match }) {
+function OrderScreen({ match, history}) {
 
     const orderId = match.params.id;
     //useState initial value and function to update initial value. by default value false
@@ -26,6 +26,14 @@ function OrderScreen({ match }) {
     const orderPay = useSelector((state) => state.orderPay)
     const { loading: loadingPay, success: successPay } = orderPay;//so we'll get loading and success from it. rename those becouse we already have them from other state
 
+    //useSelector is function that gives acces to entire state(store).and we can pullout  orderDeliver state from it.
+    const orderDeliver = useSelector((state) => state.orderDeliver)
+  const { loading: loadingDeliver, success: successDeliver } = orderDeliver
+
+    const userLogin = useSelector((state) => state.userLogin)
+    const { userInfo } = userLogin
+  
+
     if (!loading) {//if no loading then
         const addDecimals = (num) => {
             return (Math.round(num * 100) / 100).toFixed(2);
@@ -37,6 +45,9 @@ function OrderScreen({ match }) {
 
 
     useEffect(() => {
+        if (!userInfo) {
+            history.push('/login')
+          }
         const addPaypalScript = async function () {
             //fetch client id from backend
             const { data: clientId } = await axios.get('/api/config/paypal')
@@ -52,8 +63,9 @@ function OrderScreen({ match }) {
             //we'll have peace of state when sdk is ready. that paypal gives us
         }
 
-        if (!order || successPay) {//if order isnt there or if we have success pay than dispatch this
+        if (!order || successPay || successDeliver || order._id !== orderId) {//if order isnt there or if we have success pay than dispatch this
             dispatch({ type: 'ORDER_PAY_RESET' })//if we dont do this it will keep refreshing
+            dispatch({ type: 'ORDER_DELIVER_RESET' })//dispatching to reset orderDeliver state
             dispatch(getOrderDetails(orderId))//it will load order again but it'll be paid
         } else if (!order.isPaid) {//if order is not paid
             if (!window.paypal) {//check if paypal script is there
@@ -66,13 +78,18 @@ function OrderScreen({ match }) {
         /*if (!order || order._id !== orderId) {
             dispatch(getOrderDetails(orderId))
         }*/
-    }, [dispatch, order, orderId, successPay])//if order or orderId is changed it will call this useEffect function
+    }, [dispatch, orderId, successPay, successDeliver, order, history, userInfo])//if order or orderId is changed it will call this useEffect function
 
     //it takes from paypal paymentResult
     const successPaymentHandler = (paymentResult) => {
         console.log(paymentResult)
         //dispatch payOrder action, give orderId and paymentResult that we get from paypal
         dispatch(payOrder(orderId, paymentResult))
+    }
+
+
+    const deliverHandler = () =>{
+        dispatch(deliverOrder(order))
     }
 
     return loading ? <Loader /> : error ? <Message variant='danger'>{error}
@@ -189,6 +206,12 @@ function OrderScreen({ match }) {
                                     <PayPalButton amount={order.totalPrice} onSuccess=
                                         {successPaymentHandler} />
                                 )}
+                            </ListGroup.Item>
+                        )}
+                        {loadingDeliver && <Loader />}
+                        {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                            <ListGroup.Item>
+                                <Button type='button' className='btn btn-block' onClick={deliverHandler}>Mark As Delivered</Button>
                             </ListGroup.Item>
                         )}
 
