@@ -1,8 +1,10 @@
 import React from 'react';//import react module to use JSX code
+import { Route } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap';//to use LinContainer, so it will not refresh
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../actions/userActions.js'
+import SearchBox from './SearchBox.js'
 
 // create Header component as function and export it
 function Header() {
@@ -27,6 +29,7 @@ function Header() {
                     </LinkContainer>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
+                        <Route render={({ history }) => <SearchBox history={history} />} />
                         <Nav className="ml-auto">
                             <LinkContainer to='/cart'>
                                 <Nav.Link>

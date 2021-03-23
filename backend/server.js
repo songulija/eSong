@@ -18,19 +18,11 @@ connectDB();
 
 const app = express();//express is function that represents express
 
-if(process.env.NODE_ENV === 'development'){
+if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'))
 }
 
 app.use(express.json());//that will allow to accept json data in body
-
-
-
-//when user makes request to home route it triggers this callback function
-app.get('/', function (req, res) {
-    res.send('Hello');
-});
-
 
 
 //for anything that goes to /api/products is going to be linked to productsRoutes.js
@@ -50,14 +42,28 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes)
 
 
-const __dirname = path.resolve();//to get __directory path of directory
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')))//make folder uploads static
-
 //when making get request to this route. so when ready to make payment we will make request 
 app.get('/api/config/paypal', (req, res) => {//to this route and get PAYPAL_CLIENT_ID
     res.send(process.env.PAYPAL_CLIENT_ID)
 })
 
+
+const __dirname = path.resolve();//to get __directory path of directory
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')))//make folder uploads static
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '/frontend/build')))//set /frontnd/build folder as static folder
+
+    app.get('*', (req, res) => {//when you hit any route thats not our api
+        //point to that index html thats in our build folder
+        res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))//path to index.html
+        //setting front end build into static folder, any route thats is not any of these (our api) will point into index.html
+    })
+} else {
+    app.get('/', (req, res) => {
+        res.send('API is running....')
+    })
+}
 
 //we want erors for 404 which is not found. if we go anywhere that is not actual route
 app.use(notFound);

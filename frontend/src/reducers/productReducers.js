@@ -1,17 +1,21 @@
 //creating reducer. first paraemeter is how our state will look like. what is initial state of productListReducer
 //reducer will take care of all Actions related to productListReducer
-export const productListReducer = (state = { products: [] }, action) => {//and second is action
+export const productListReducer = (state = { products: [] }, action) => {
     switch (action.type) {
         case 'PRODUCT_LIST_REQUEST':
             return { loading: true, products: [] }
-        case 'PRODUCT_LIST_SUCCESS'://if success dispatched action will have products data on it. as payload
-            return { loading: false, products: action.payload }//loading false becouse it loaded
+        case 'PRODUCT_LIST_SUCCESS':
+            return {
+                loading: false,
+                products: action.payload.products,
+                pages: action.payload.pages,
+                page: action.payload.page,
+            }
         case 'PRODUCT_LIST_FAIL':
-            return { loading: false, error: action.payload }//if fail dispatched action will have error data on it. as payload
+            return { loading: false, error: action.payload }
         default:
-            return state;//return initial state
+            return state
     }
-
 }
 
 //creating reducer. first paraemeter is how our state will look like. what is initial state of productDetauksReducer. it will be product object
@@ -79,12 +83,12 @@ export const productUpdateReducer = (state = { product: {} }, action) => {
 
 
 
-//reducer will catch all actions   related to productUpdateReducer
+//reducer will catch all actions   related to productReviewCreateReducer
 export const productReviewCreateReducer = (state = {}, action) => {
     switch (action.type) {
         case 'PRODUCT_CREATE_REVIEW_REQUEST':
             return { loading: true }
-        case 'PRODUCT_CREATE_REVIEW_SUCCESS':
+        case 'PRODUCT_CREATE_REVIEW_SUCCESS'://it will return success true 
             return { loading: false, success: true }
         case 'PRODUCT_CREATE_REVIEW_FAIL':
             return { loading: false, error: action.payload }
@@ -95,11 +99,12 @@ export const productReviewCreateReducer = (state = {}, action) => {
     }
 }
 
+//reducer will catch all actions   related to productTopRatedReducer. its state equals to products array
 export const productTopRatedReducer = (state = { products: [] }, action) => {
     switch (action.type) {
-        case 'PRODUCT_TOP_REQUEST':
+        case 'PRODUCT_TOP_REQUEST'://return empty products array
             return { loading: true, products: [] }
-        case 'PRODUCT_TOP_SUCCESS':
+        case 'PRODUCT_TOP_SUCCESS'://return products, its equal to dispatched action data send as payload
             return { loading: false, products: action.payload }
         case 'PRODUCT_TOP_FAIL':
             return { loading: false, error: action.payload }

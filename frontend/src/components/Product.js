@@ -6,11 +6,14 @@ import Rating from './Rating.js'
 
 // create Product component as function, getting hold of properties
 function Product(props) {//that are beeing passed to this component
+
+
+
     return (
         <div>
             <Card className='my-3 p-3 rounded'>
                 <Link to={`/product/${props.product._id}`}>
-                    <Card.Img variant="top" src={props.product.image} />
+                    <Card.Img variant="top" src={props.product.image} style={{ with: '280px', height: '330px' }} />
                 </Link>
                 <Card.Body>
                     <Link to={`/product/${props.product._id}`}>

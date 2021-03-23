@@ -4,72 +4,68 @@ import mongoose from 'mongoose';//import mongoose module to use it
 //which will be array of review objects(documents). so we will use this schema
 //in productSchema. to be able to add many reviews to product
 const reviewSchema = mongoose.Schema({
-    name:{//review will have name, rating and comment
-        type: String,
-        required: true
-    },
-    rating: {
-        type:Number,
-        required: true
-    },
-    comment:{
-        type: String,
-        required: true
-    },
-    user:{
+    name: { type: String, required: true },
+    rating: { type: Number, required: true },
+    comment: { type: String, required: true },
+    user: {
         type: mongoose.Schema.Types.ObjectId,//type of object id
         required: true,
         ref: 'User'//reference to specific user for this objectId
     }
-},{
+}, {
     timestamps: true
 })
 
 //creating schema. every document in products collection will follow
 //this schema structure
 const productSchema = mongoose.Schema({
-    user:{//users sells products, it will be id of that user(ObjectId) 
+    user: {//users sells products, it will be id of that user(ObjectId) 
         type: mongoose.Schema.Types.ObjectId,//which mongoose gives when adding to database by default
         required: true,
         ref: 'User'//reference to specific model for this objectId
     },//that adds relationship between product and user
-    name:{//product will have name(string)
+    name: {
         type: String,
-        required: true
+        required: true,
     },
-    image:{
+    image: {
         type: String,
-        required: true
+        required: true,
     },
-    brand:{
+    brand: {
         type: String,
-        required: true
+        required: true,
     },
-    category:{
+    category: {
         type: String,
-        required: true
+        required: true,
     },
-    description:{
+    description: {
         type: String,
-        required: true
+        required: true,
     },
-    reviews:[reviewSchema],//review is going to be array of review object(documents)
-    rating:{
+    reviews: [reviewSchema],
+    rating: {
         type: Number,
         required: true,
-        default: 0
+        default: 0,
+    },
+    numReviews: {
+        type: Number,
+        required: true,
+        default: 0,
     },
     price: {
         type: Number,
         required: true,
-        default: 0
+        default: 0,
     },
-    countInStock:{
+    countInStock: {
         type: Number,
         required: true,
-        default: 0
-    }
-},{
+        default: 0,
+    },
+}, {
     timestamps: true
 })
 

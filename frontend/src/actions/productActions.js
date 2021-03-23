@@ -2,10 +2,12 @@
 //we give type/name to action
 import axios from 'axios'
 
-export const listProducts = () => async (dispatch) => {
+//we can pass keyword and pageNumber. but its default.
+export const listProducts = (keyword = '', pageNumber = '') => async (dispatch) => {
     try {
         dispatch({ type: 'PRODUCT_LIST_REQUEST' });
-        const { data } = await axios.get('/api/products');//making get request to this route which will return all products from db
+        //we pass query string to request . if you have more than 1. then after first just ad &
+        const { data } = await axios.get(`/api/products?keyword=${keyword}&pageNumber=${pageNumber}`);//making get request to this route which will return all products from db
         dispatch({ type: 'PRODUCT_LIST_SUCCESS', payload: data });//when distaching this action we will send data as payload
     } catch (error) {
         dispatch({
@@ -14,6 +16,9 @@ export const listProducts = () => async (dispatch) => {
         });
     }
 }
+
+
+
 
 
 //create Action. Its just function that returns object.
@@ -150,5 +155,60 @@ export const updateProduct = (product) => async (dispatch, getState) => {
             type: 'PRODUCT_UPDATE_FAIL',
             payload: message,
         })
+    }
+}
+
+
+//action will take productId and review object with data
+export const createProductReview = (productId, review) => async (dispatch, getState) => {
+    try {
+        dispatch({//dispatch action with type/name ..
+            type: 'PRODUCT_CREATE_REVIEW_REQUEST',
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()//get userLogin state from store, then destructure to userInfo
+
+        const config = {//we add content type to header and token
+            headers: {//get token from userInfo and pass it to authorization
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        }
+        //make post request to /api/products/${product._id}, passing review object and token(config)
+        await axios.post(`/api/products/${productId}/reviews`, review, config)
+        //then we pass product object we want to update and token(config)
+
+        dispatch({//dispatch action with type/name and pass we dont pass data becouse we dont get data from post request
+            type: 'PRODUCT_CREATE_REVIEW_SUCCESS'
+        })
+    } catch (error) {
+        const message =
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        dispatch({
+            type: 'PRODUCT_CREATE_REVIEW_FAIL',
+            payload: message,
+        })
+    }
+}
+
+
+
+
+//we can pass keyword and pageNumber. but its default.
+export const listTopProducts = () => async (dispatch) => {
+    try {
+        dispatch({ type: 'PRODUCT_TOP_REQUEST' });
+
+        const { data } = await axios.get(`/api/products/top`);//making get request to this route which will return 3 top products from db
+        dispatch({ type: 'PRODUCT_TOP_SUCCESS', payload: data });//when distaching this action we will send data as payload
+    } catch (error) {
+        dispatch({
+            type: 'PRODUCT_TOP_FAIL',
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message
+        });
     }
 }
